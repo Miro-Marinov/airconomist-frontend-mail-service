@@ -1,6 +1,5 @@
 package com.airconomist.frontendmail.service;
 
-import com.airconomist.common.config.RabbitConfigStatics;
 import com.airconomist.frontendmail.endpoint.EmailDto;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -24,12 +23,11 @@ public class MailRequestService {
     RabbitAdmin rabbitAdmin;
 
     public void publishEmailRequest(EmailDto emailDto, MediaType mediaType) {
-        Queue queue = new Queue(RabbitConfigStatics.EMAIL_QUEUE);
+        Queue queue = new Queue("email_queue");
         rabbitAdmin.declareQueue(queue);
-        TopicExchange exchange = new TopicExchange(RabbitConfigStatics.EMAIL_EXCHANGE);
+        TopicExchange exchange = new TopicExchange("email_exchange");
         rabbitAdmin.declareExchange(exchange);
-        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with(RabbitConfigStatics.EMAIL_KEY));
-        rabbitTemplate.convertAndSend(RabbitConfigStatics.EMAIL_EXCHANGE, RabbitConfigStatics.EMAIL_KEY, emailDto.toString());
+        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with("email_key"));
+        rabbitTemplate.convertAndSend("email_exchange", "email_key", emailDto.toString());
     }
-
 }

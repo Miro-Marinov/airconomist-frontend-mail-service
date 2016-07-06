@@ -1,6 +1,6 @@
 package com.airconomist.frontendmail.config;
 
-import com.airconomist.common.utils.EnvVarUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -17,9 +17,9 @@ public class RabbitConfig {
 
     @Bean
     ConnectionFactory connectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(EnvVarUtil.getFromEnvOrSystemProperties("RABBIT_SERVER"));
-        connectionFactory.setUsername(EnvVarUtil.getFromEnvOrSystemProperties("RABBIT_USER"));
-        connectionFactory.setPassword(EnvVarUtil.getFromEnvOrSystemProperties("RABBIT_PASSWORD"));
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(getFromEnvOrSystemProperties("RABBIT_SERVER"));
+        connectionFactory.setUsername(getFromEnvOrSystemProperties("RABBIT_USER"));
+        connectionFactory.setPassword(getFromEnvOrSystemProperties("RABBIT_PASSWORD"));
         return connectionFactory;
     }
 
@@ -31,5 +31,21 @@ public class RabbitConfig {
     @Bean
     MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    public static String getFromEnvOrSystemProperties(String propName) {
+        String propValue = System.getenv(propName);
+        if(StringUtils.isBlank(propValue)) {
+            propValue = System.getProperty(propName);
+        }
+
+        checkIfPresent(propName, propValue);
+        return propValue;
+    }
+
+    public static void checkIfPresent(String propertyName, String propertyValue) {
+        if (StringUtils.isBlank(propertyValue)) {
+            throw new IllegalArgumentException("Please specify correct \'" + propertyName + "\' property.");
+        }
     }
 }
