@@ -1,5 +1,6 @@
 package com.airconomist.frontendmail.endpoint;
 
+import com.airconomist.common.domain.dto.email.EmailDto;
 import com.airconomist.frontendmail.service.MailRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -23,14 +24,14 @@ public class EmailController {
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public EmailDto sendEmail(@RequestBody EmailDto emailDto) {
-        mailRequestService.publishEmailRequest(emailDto, MediaType.TEXT_HTML);
+        mailRequestService.publishEmailRequest(emailDto);
         return emailDto;
     }
 
     @RequestMapping(value = "/get",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public EmailDto sendEmail() {
-        return new EmailDto("green", "red");
+    public EmailDto ping() {
+        return new EmailDto("green", "red", "violet");
     }
 }

@@ -1,33 +1,28 @@
 package com.airconomist.frontendmail.service;
 
-import com.airconomist.frontendmail.endpoint.EmailDto;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
+import com.airconomist.common.domain.dto.email.EmailDto;
+import com.airconomist.rabbitmq.config.AbstractMqClientConfig;
+import com.airconomist.rabbitmq.config.MqClient;
+import com.airconomist.rabbitmq.config.RabbitConstants;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitAdmin;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 
 /**
  * Created by Miroslav on 7/1/2016.
  */
 @Service
+@Import(AbstractMqClientConfig.class)
 public class MailRequestService {
 
     @Autowired
-    RabbitTemplate rabbitTemplate;
+    MqClient mqClient;
 
-    @Autowired
-    RabbitAdmin rabbitAdmin;
-
-    public void publishEmailRequest(EmailDto emailDto, MediaType mediaType) {
-        Queue queue = new Queue("email_queue");
-        rabbitAdmin.declareQueue(queue);
-        TopicExchange exchange = new TopicExchange("email_exchange");
-        rabbitAdmin.declareExchange(exchange);
-        rabbitAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with("email_key"));
-        rabbitTemplate.convertAndSend("email_exchange", "email_key", emailDto.toString());
+    public void publishEmailRequest(EmailDto emailDto) {
+        mqClient.sendMessage(new TopicExchange(RabbitConstants.EMAIL_EXCHANGE_NAME),
+                RabbitConstants.EMAIL_QUEUE_NAME,
+                RabbitConstants.EMAIL_KEY_NAME,
+                emailDto);
     }
 }
