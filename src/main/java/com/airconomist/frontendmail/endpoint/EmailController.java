@@ -1,6 +1,6 @@
 package com.airconomist.frontendmail.endpoint;
 
-import com.airconomist.common.domain.dto.email.EmailDto;
+import com.airconomist.frontendmail.domain.EmailDto;
 import com.airconomist.frontendmail.service.MailRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

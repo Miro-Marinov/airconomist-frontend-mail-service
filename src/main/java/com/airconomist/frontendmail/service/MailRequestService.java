@@ -1,6 +1,6 @@
 package com.airconomist.frontendmail.service;
 
-import com.airconomist.common.domain.dto.email.EmailDto;
+import com.airconomist.frontendmail.domain.EmailDto;
 import com.airconomist.rabbitmq.config.AbstractMqClientConfig;
 import com.airconomist.rabbitmq.config.MqClient;
 import com.airconomist.rabbitmq.config.RabbitConstants;
