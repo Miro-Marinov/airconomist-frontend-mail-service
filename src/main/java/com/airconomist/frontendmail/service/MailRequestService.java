@@ -1,6 +1,6 @@
 package com.airconomist.frontendmail.service;
 
-import com.airconomist.frontendmail.domain.EmailDto;
+import com.airconomist.frontendmail.domain.email.EmailDto;
 import com.airconomist.rabbitmq.config.AbstractMqClientConfig;
 import com.airconomist.rabbitmq.config.MqClient;
 import com.airconomist.rabbitmq.config.RabbitConstants;
@@ -14,15 +14,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Import(AbstractMqClientConfig.class)
-public class MailRequestService {
+public class MailRequestService extends AbstractMqClientConfig {
 
     @Autowired
     MqClient mqClient;
 
     public void publishEmailRequest(EmailDto emailDto) {
-        mqClient.sendMessage(new TopicExchange(RabbitConstants.EMAIL_EXCHANGE_NAME),
-                RabbitConstants.EMAIL_QUEUE_NAME,
-                RabbitConstants.EMAIL_KEY_NAME,
+        mqClient.sendMessage(new TopicExchange(RabbitConstants.EMAIL_EXCHANGE),
+                RabbitConstants.EMAIL_QUEUE,
+                RabbitConstants.EMAIL_KEY,
                 emailDto);
     }
 }

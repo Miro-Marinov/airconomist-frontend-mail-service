@@ -1,4 +1,4 @@
-package com.airconomist.frontendmail.domain;
+package com.airconomist.frontendmail.domain.email;
 
 /**
  * @author Miroslav Marinov <mirobomarinov@gmail.com>

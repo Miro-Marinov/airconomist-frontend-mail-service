@@ -1,13 +1,18 @@
 package com.airconomist.frontendmail.endpoint;
 
-import com.airconomist.frontendmail.domain.EmailDto;
-import com.airconomist.frontendmail.service.MailRequestService;
+import com.airconomist.frontendmail.domain.email.EmailDto;
+import com.airconomist.frontendmail.domain.email.EventsResponseDto;
+import com.airconomist.frontendmail.service.EventfulServiceConnector;
+import com.airconomist.frontendmail.service.dto.PreferenceRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Miroslav on 7/4/2016.
@@ -17,15 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmailController {
 
     @Autowired
-    MailRequestService mailRequestService;
+    EventfulServiceConnector eventfulServiceConnector;
 
     @RequestMapping(value = "/send",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public EmailDto sendEmail(@RequestBody EmailDto emailDto) {
-        mailRequestService.publishEmailRequest(emailDto);
-        return emailDto;
+    public List<EventsResponseDto> sendEmail(@RequestBody PreferenceRequestDTO prefDto) {
+        return eventfulServiceConnector.sendBulkAndGetOptionalList(Arrays.asList(prefDto, prefDto)).get();
     }
 
     @RequestMapping(value = "/get",
