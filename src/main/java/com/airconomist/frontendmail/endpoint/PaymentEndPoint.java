@@ -3,8 +3,8 @@ package com.airconomist.frontendmail.endpoint;
 
 import com.airconomist.frontendmail.domain.payment.PaymentRequest;
 import com.airconomist.frontendmail.domain.payment.zooz.*;
-import com.airconomist.rabbitmq.config.MqClient;
 import com.airconomist.rabbitmq.config.RabbitConstants;
+import com.airconomist.rabbitmq.config.core.MqClient;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.zooz.common.client.ecomm.beans.responses.*;
 import com.zooz.common.client.ecomm.beans.server.response.ZoozServerResponse;
