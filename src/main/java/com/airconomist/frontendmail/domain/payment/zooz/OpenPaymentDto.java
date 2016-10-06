@@ -1,13 +1,14 @@
 package com.airconomist.frontendmail.domain.payment.zooz;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.zooz.common.client.ecomm.beans.InvoiceItem;
+
+import java.util.List;
 
 /**
  * @author Miroslav Marinov <mirobomarinov@gmail.com>.
  */
 public class OpenPaymentDto {
 
-    @JsonProperty
     private Double amount;
 
     private CurrencyCodeISO currencyCode;
@@ -18,9 +19,11 @@ public class OpenPaymentDto {
 
     private String details;
 
-    private String bookingId;
+    private String transactionId;
 
     private String userUuid;
+
+    private List<InvoiceItem> invoiceItems;
 
     public CurrencyCodeISO getCurrencyCode() {
         return currencyCode;
@@ -42,11 +45,15 @@ public class OpenPaymentDto {
         return details;
     }
 
-    public String getBookingId() {
-        return bookingId;
+    public String getTransactionId() {
+        return transactionId;
     }
 
     public String getUserUuid() {
         return userUuid;
+    }
+
+    public List<InvoiceItem> getInvoiceItems() {
+        return invoiceItems;
     }
 }

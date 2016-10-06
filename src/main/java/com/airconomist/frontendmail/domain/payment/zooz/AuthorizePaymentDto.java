@@ -9,6 +9,8 @@ public class AuthorizePaymentDto {
 
     private String paymentToken;
 
+    private String transactionId;
+
     private PaymentMethodType paymentMethodType;
 
     private String paymentMethodToken;
@@ -57,6 +59,14 @@ public class AuthorizePaymentDto {
 
     public String getUserIpAddress() {
         return userIpAddress;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 
     public void setUserAgent(String userAgent) {

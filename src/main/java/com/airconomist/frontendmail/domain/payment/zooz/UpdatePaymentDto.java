@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class UpdatePaymentDto {
     @JsonProperty
-    private String paymentToken;
+    private String transactionId;
 
     @JsonProperty
     private Double amount;
@@ -51,11 +51,11 @@ public class UpdatePaymentDto {
         return bookingId;
     }
 
-    public String getPaymentToken() {
-        return paymentToken;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setPaymentToken(String paymentToken) {
-        this.paymentToken = paymentToken;
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
     }
 }

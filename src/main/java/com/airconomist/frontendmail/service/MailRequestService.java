@@ -17,8 +17,7 @@ public class MailRequestService {
 
     public void publishEmailRequest(EmailDto emailDto) {
         mqClient.sendMessage(RabbitConstants.EMAIL_EXCHANGE,
-                RabbitConstants.EMAIL_QUEUE,
-                RabbitConstants.EMAIL_KEY,
+                RabbitConstants.EMAIL_ENDPOINT,
                 emailDto);
     }
 }

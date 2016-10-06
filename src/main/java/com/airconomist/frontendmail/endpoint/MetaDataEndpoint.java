@@ -27,6 +27,7 @@ public class MetaDataEndpoint {
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void getAllAirports() {
-        mqClient.sendAndReceiveResponse(METADATA_EXCHANGE, METADATA_AIRPORTS_QUEUE, METADATA_AIRPORTS_GET_ALL_KEY, null, new TypeReference<List<String>>() {});
+        mqClient.sendAndReceiveResponse(METADATA_EXCHANGE,
+                METADATA_AIRLINES_GET_ALL_ENDPOINT, new TypeReference<List<String>>() {});
     }
 }

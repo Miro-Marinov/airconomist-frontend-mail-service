@@ -1,16 +1,14 @@
 package com.airconomist.frontendmail.domain.payment.zooz;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * @author Miroslav Marinov <mirobomarinov@gmail.com>.
  */
 public class CommitPaymentDto {
 
-    @JsonProperty
+    private String transactionId;
+
     private String paymentToken;
 
-    @JsonProperty
     private Double amount;
 
     public String getPaymentToken() {
@@ -29,4 +27,11 @@ public class CommitPaymentDto {
         this.amount = amount;
     }
 
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 }

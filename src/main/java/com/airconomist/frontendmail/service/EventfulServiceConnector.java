@@ -22,16 +22,14 @@ public class EventfulServiceConnector {
 
         return mqClient
                 .sendAndReceiveResponse(RabbitConstants.EVENT_EXCHANGE,
-                        RabbitConstants.EVENT_QUEUE_NAME,
-                        RabbitConstants.EVENT_KEY_NAME,
+                        RabbitConstants.EVENT_ENDPOINT,
                         request,
                         EventsResponseDto.class);
     }
 
     public Optional<List<EventsResponseDto>> sendBulkAndGetOptionalList(List<PreferenceRequestDTO> request) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.EVENT_EXCHANGE,
-                RabbitConstants.EVENT_QUEUE_NAME_GET_BULK,
-                RabbitConstants.EVENT_KEY_NAME_GET_BULK,
+                RabbitConstants.EVENT_ENDPOINT,
                 request,
                 new TypeReference<List<EventsResponseDto>>() {
                 }).map(result -> result.stream().

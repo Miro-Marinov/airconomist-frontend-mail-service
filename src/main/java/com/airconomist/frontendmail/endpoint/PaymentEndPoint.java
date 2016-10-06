@@ -2,6 +2,8 @@ package com.airconomist.frontendmail.endpoint;
 
 
 import com.airconomist.frontendmail.domain.payment.PaymentRequest;
+import com.airconomist.frontendmail.domain.payment.backend.dto.OpenAuthorizePaymentRequestDTO;
+import com.airconomist.frontendmail.domain.payment.backend.dto.PaymentResponseDTO;
 import com.airconomist.frontendmail.domain.payment.zooz.*;
 import com.airconomist.rabbitmq.config.RabbitConstants;
 import com.airconomist.rabbitmq.config.core.MqClient;
@@ -36,8 +38,39 @@ public class PaymentEndPoint {
         paymentRequest.getAuthorizePaymentDto().setUserAgent(userAgent);
         paymentRequest.getAuthorizePaymentDto().setUserIpAddress(getIpAddress(request));
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_PAY_QUEUE_NAME,
-                RabbitConstants.PAYMENT_PAY_KEY_NAME,
+                RabbitConstants.PAYMENT_PAY_ENDPOINT,
+                paymentRequest,
+                new TypeReference<ZoozServerResponse<CommitResponse>>() {
+                }).orElseGet(() -> null);
+    }
+
+
+    @ApiOperation(value = "Opens and authorizes a payment.")
+    @RequestMapping(value = "/freezee", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaymentResponseDTO openAndAuthorize(@RequestBody OpenAuthorizePaymentRequestDTO paymentRequest,
+                                                               @RequestHeader(value = "User-Agent") String userAgent,
+                                                               HttpServletRequest request) {
+        paymentRequest.getAuthorizePaymentDto().setUserAgent(userAgent);
+        paymentRequest.getAuthorizePaymentDto().setIpAddress(getIpAddress(request));
+        return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
+                RabbitConstants.PAYMENT_FREEZE_FUNDS_ENDPOINT,
+                paymentRequest,
+                new TypeReference<PaymentResponseDTO>() {
+                }).orElse(null);
+    }
+
+
+    @ApiOperation(value = "Opens and authorizes a payment.")
+    @RequestMapping(value = "/freeze", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ZoozServerResponse<CommitResponse> openAndAuthorize(@RequestBody PaymentRequest paymentRequest,
+                                                               @RequestHeader(value = "User-Agent") String userAgent,
+                                                               HttpServletRequest request) {
+        paymentRequest.getAuthorizePaymentDto().setUserAgent(userAgent);
+        paymentRequest.getAuthorizePaymentDto().setUserIpAddress(getIpAddress(request));
+        return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
+                RabbitConstants.PAYMENT_FREEZE_FUNDS_ENDPOINT,
                 paymentRequest,
                 new TypeReference<ZoozServerResponse<CommitResponse>>() {
                 }).orElseGet(() -> null);
@@ -47,8 +80,7 @@ public class PaymentEndPoint {
     @RequestMapping(value = "/open", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<OpenPaymentResponse> openPayment(@RequestBody OpenPaymentDto openPaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_OPEN_QUEUE_NAME,
-                RabbitConstants.PAYMENT_OPEN_KEY_NAME,
+                RabbitConstants.PAYMENT_OPEN_ENDPOINT,
                 openPaymentDto,
                 new TypeReference<ZoozServerResponse<OpenPaymentResponse>>() {
                 }).orElseGet(() -> null);
@@ -58,8 +90,7 @@ public class PaymentEndPoint {
     @RequestMapping(value = "/authorize", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<AuthorizeResponse> authorize(@RequestBody AuthorizePaymentDto authorizePaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_AUTHORIZE_QUEUE_NAME,
-                RabbitConstants.PAYMENT_AUTHORIZE_KEY_NAME,
+                RabbitConstants.PAYMENT_AUTHORIZE_ENDPOINT,
                 authorizePaymentDto,
                 new TypeReference<ZoozServerResponse<AuthorizeResponse>>() {
                 }).orElseGet(() -> null);
@@ -69,8 +100,7 @@ public class PaymentEndPoint {
     @RequestMapping(value = "/token", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<GetTokenResponse> getCustomerToken(@RequestBody GetCustomerTokenDto getCustomerTokenDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_TOKEN_QUEUE_NAME,
-                RabbitConstants.PAYMENT_TOKEN_KEY_NAME,
+                RabbitConstants.PAYMENT_TOKEN_ENDPOINT,
                 getCustomerTokenDto,
                 new TypeReference<ZoozServerResponse<GetTokenResponse>>() {
                 }).orElseGet(() -> null);
@@ -80,8 +110,7 @@ public class PaymentEndPoint {
     @RequestMapping(value = "/commit", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<CommitResponse> commit(@RequestBody CommitPaymentDto commitPaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_COMMIT_QUEUE_NAME,
-                RabbitConstants.PAYMENT_COMMIT_KEY_NAME,
+                RabbitConstants.PAYMENT_COMMIT_ENDPOINT,
                 commitPaymentDto,
                 new TypeReference<ZoozServerResponse<CommitResponse>>() {
                 }).orElseGet(() -> null);
@@ -92,8 +121,7 @@ public class PaymentEndPoint {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<UpdateResponse> update(@RequestBody UpdatePaymentDto updatePaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_UPDATE_QUEUE_NAME,
-                RabbitConstants.PAYMENT_UPDATE_KEY_NAME,
+                RabbitConstants.PAYMENT_UPDATE_ENDPOINT,
                 updatePaymentDto,
                 new TypeReference<ZoozServerResponse<UpdateResponse>>() {
                 }).orElseGet(() -> null);
@@ -104,8 +132,7 @@ public class PaymentEndPoint {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<VoidResponse> voidPayment(@RequestBody VoidPaymentDto voidPaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_VOID_QUEUE_NAME,
-                RabbitConstants.PAYMENT_VOID_QUEUE_NAME,
+                RabbitConstants.PAYMENT_VOID_ENDPOINT,
                 voidPaymentDto,
                 new TypeReference<ZoozServerResponse<VoidResponse>>() {
                 }).orElseGet(() -> null);
@@ -116,8 +143,7 @@ public class PaymentEndPoint {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ZoozServerResponse<RefundResponse> refundPayment(@RequestBody RefundPaymentDto refundPaymentDto) {
         return mqClient.sendAndReceiveResponse(RabbitConstants.PAYMENT_EXCHANGE,
-                RabbitConstants.PAYMENT_REFUND_QUEUE_NAME,
-                RabbitConstants.PAYMENT_REFUND_KEY_NAME,
+                RabbitConstants.PAYMENT_REFUND_ENDPOINT,
                 refundPaymentDto,
                 new TypeReference<ZoozServerResponse<RefundResponse>>() {
                 }).orElseGet(() -> null);
